@@ -18,6 +18,7 @@ phases:
       - echo $IMAGE_TAG
       - echo start command
       - $(aws ecr get-login --no-include-email --region $AWS_DEFAULT_REGION)
+      - cd order
   build:
     commands:
       - echo Build started on `date`
