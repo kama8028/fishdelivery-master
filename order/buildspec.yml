@@ -3,7 +3,7 @@ version: 0.2
 env:
   variables:
     _PROJECT_NAME: "order"
-    IMAGE_REPO_NAME: "order-ecr"
+    IMAGE_REPO_NAME: "user25-ecr"
 
 phases:
   install:
