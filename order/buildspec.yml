@@ -25,7 +25,7 @@ phases:
       - echo $IMAGE_TAG
       - echo start command
       - $(aws ecr get-login --no-include-email --region $AWS_DEFAULT_REGION)
-      - cd $_PROJECT_NAME #컴파일을 위해서 order 폴더로 이동한다.
+      - cd order #컴파일을 위해서 order 폴더로 이동한다.
   build:
     commands:
       - echo Build started on `date`
