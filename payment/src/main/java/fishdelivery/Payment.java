@@ -30,16 +30,18 @@ public class Payment {
     /* 한용선 Entity에 insert 일어나기 전에 Circuit breaker 실행을 위해 sleep을 줬다. */
     @PrePersist
     public void onPrePersist(){
-//        try{
-//            Thread.currentThread().sleep((long) (400 + Math.random() * 220));
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
+        try{
+            System.out.println("sleep실행");
+            Thread.currentThread().sleep((long) (400 + Math.random() * 220));
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @PostPersist
     public void onPostPersist(){
         /* 한용선 주문상태가 paid인 경우만 kafka 이벤트를 publish 한다. */
+        System.out.println("한용선 PostPersist");
         if(this.getStatus().equals("paid")) {
             PayApproved payApproved = new PayApproved();
             BeanUtils.copyProperties(this, payApproved);

@@ -36,8 +36,11 @@ feign:
   hystrix:
     enabled: true
 
-# 한용선 hystrix 명령의 기본 timeout을 1초로 변경
-hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds: 1000
+hystrix:
+  command:
+    # 전역설정
+    default:
+      execution.isolation.thread.timeoutInMilliseconds: 600
 
 logging:
   level:

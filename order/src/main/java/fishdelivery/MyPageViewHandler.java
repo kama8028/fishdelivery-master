@@ -17,7 +17,7 @@ public class MyPageViewHandler {
     private MyPageRepository myPageRepository;
 
     @StreamListener(KafkaProcessor.INPUT)
-    public void whenOrderTaken_then_CREATE_1 (@Payload OrderPlaced orderPlaced) {
+    public void whenOrderPlaced_then_CREATE_1 (@Payload OrderPlaced orderPlaced) {
         try {
 
             if (!orderPlaced.validate()) return;
