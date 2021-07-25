@@ -42,7 +42,7 @@ spring:
         - id: order
           uri: http://order:8080
           predicates:
-            - Path=/orders/** /myPages/**
+            - Path=/orders/**, /myPages/**
         - id: payment
           uri: http://payment:8080
           predicates:
