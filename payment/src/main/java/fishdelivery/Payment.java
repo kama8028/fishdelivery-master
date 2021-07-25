@@ -30,12 +30,12 @@ public class Payment {
     /* 한용선 Entity에 insert 일어나기 전에 Circuit breaker 실행을 위해 sleep을 줬다. */
     @PrePersist
     public void onPrePersist(){
-        try{
-            System.out.println("sleep실행");
-            Thread.currentThread().sleep((long) (400 + Math.random() * 220));
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+//        try{
+//            System.out.println("sleep실행");
+//            Thread.currentThread().sleep((long) (400 + Math.random() * 220));
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
     }
 
     @PostPersist
