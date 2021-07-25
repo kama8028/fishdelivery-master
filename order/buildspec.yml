@@ -43,7 +43,7 @@ phases:
       - kubectl config set-context default --cluster=k8s --user=admin
       - kubectl config use-context default
       - |
-          cat <<EOF | kubectl apply -f -
+          cat <<EOF | kubectl create -f -
           apiVersion: v1
           kind: Service
           metadata:
@@ -52,15 +52,15 @@ phases:
               app: $_PROJECT_NAME
           spec:
             ports:
-              - port: 8080
-                targetPort: 8080
+            - port: 8080
+              targetPort: 8080
             selector:
               app: $_PROJECT_NAME
            # type:
            #   LoadBalancer
           EOF
       - |
-          cat <<EOF | kubectl apply -f -
+          cat <<EOF | kubectl create -f -
           apiVersion: apps/v1
           kind: Deployment
           metadata:
@@ -78,10 +78,10 @@ phases:
                   app: $_PROJECT_NAME
               spec:
                 containers:
-                  - name: $_PROJECT_NAME
-                    image: $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
-                    ports:
-                      - containerPort: 8080
+                - name: $_PROJECT_NAME
+                  image: $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
+                  ports:
+                  - containerPort: 8080
           EOF
 cache:
   paths:
