@@ -498,6 +498,45 @@ http localhost:8088/ordermgmts "Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cC
 
 ## self healing (liveness probe)
   - 셀프힐링: Liveness Probe 를 통하여 어떠한 서비스의 health 상태가 지속적으로 저하됨에 따라 어떠한 임계치에서 pod 가 재생되는 것을 증명할 수 있는가?
+    
+Liveness Probe를 진행하기 위해서 아래의 시나리오로 테스트를 진행하였다.
+  
+시나리오는 아래와 같다.
+1.delivery Pod 실행시 /tmp/healthy 파일이 존재하는지 확인한다.(체크시간은 아래 주석표기)
+
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  name: delivery
+  labels:
+    app: delivery
+spec:
+  containers:
+  - name: delivery
+    image: 879772956301.dkr.ecr.ca-central-1.amazonaws.com/user25-ecr:delivery
+    livenessProbe:
+      exec:
+        command:
+        - cat 
+        - /tmp/healthy
+      initialDelaySeconds: 15  # 15초 후 시작
+      periodSeconds: 5 # 5초단위로 검사
+      failureThreshold: 4 # 4번 실패시 1번 Restart
+```
+
+2.체크 중간에 delivery Pod에 접속하여 파일을 넣는다.
+
+![image](https://user-images.githubusercontent.com/78421066/126961760-94a765ca-2cfc-4606-8df2-350601657de3.png)
+
+3.delivery Pod가 정상적으로 실행됨을 확인 한다.
+
+Restart 2회 확인, kubectl describe 명령어로 확인시 정상 실행 확인
+
+![image](https://user-images.githubusercontent.com/78421066/126961897-6485dcba-ce6c-4665-9e5f-05a19c3545c7.png)
+
+![image](https://user-images.githubusercontent.com/78421066/126962170-916ad806-aed8-45d3-ab19-cac6ba25d876.png)
+ 
   
 ## Zerodowntime deploy (Readiness Probe)
   - Readiness Probe 의 설정과 Rolling update을 통하여 신규 버전이 완전히 서비스를 받을 수 있는 상태일때 신규버전의 서비스로 전환됨을 siege 등으로 증명 
