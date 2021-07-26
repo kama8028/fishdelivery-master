@@ -496,7 +496,7 @@ http localhost:8088/ordermgmts "Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cC
 
 ## ConfigMap
 
-## self healing (liveness probe)
+## self-healing (liveness probe)
   - 셀프힐링: Liveness Probe 를 통하여 어떠한 서비스의 health 상태가 지속적으로 저하됨에 따라 어떠한 임계치에서 pod 가 재생되는 것을 증명할 수 있는가?
     
 Liveness Probe를 진행하기 위해서 아래의 시나리오로 테스트를 진행하였다.
