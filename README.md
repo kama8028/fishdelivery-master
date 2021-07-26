@@ -590,6 +590,19 @@ siege -c100 -t30S -v --content-type "application/json" 'a710f5c7dd5824c66a6add5c
   
 ## 동기식 호출 circuit breaker 장애격리
   - 서킷브레이커, 레이트리밋 등을 통한 장애격리와 성능효율을 높힐 수 있는가?
+서킷 브레이킹 프레임워크의 선택: Spring FeignClient + Hystrix 옵션을 사용하여 구현함.오더 요청이 과도할 경우 서킷 브레이크를 통해 장애 격리를 하려고 한다.
+Hystrix 를 설정: 요청처리 쓰레드에서 처리시간이 610 ms가 넘어서기 시작하여 어느정도 유지되면 CB 회로가 닫히도록 (요청을 빠르게 실패처리, 차단) 설정
+
+![image](https://user-images.githubusercontent.com/78421066/127003949-11164097-c421-49a7-a013-5a2aa761e463.png)
+
+![image](https://user-images.githubusercontent.com/78421066/127003995-485d5020-f945-40de-b4b8-68a9d2a66371.png)
+ 
+부하테스터 siege 툴을 통한 서킷 브레이커 동작 확인: 동시사용자 100명 30초 동안 실시
+```
+siege -c100 -t30S -v --content-type "application/json" 'a710f5c7dd5824c66a6add5cdb3d7693-1620655872.ca-central-1.elb.amazonaws.com:8080/orders POST {"customerName": "HanYongsun", "fishName": "flatfish", "qty": 1, "telephone": "01012341234", "address": "kyungkido sungnamsi", "status": "paid"}'
+```
+
+![image](https://user-images.githubusercontent.com/78421066/127003783-f2ffb4b5-42c4-404d-92d4-4601684fc58a.png)
   
 ## Autoscale (HPA)
   - 오토스케일러 (HPA) 를 설정하여 확장적 운영이 가능한가?
