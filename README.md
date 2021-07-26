@@ -606,3 +606,16 @@ siege -c100 -t30S -v --content-type "application/json" 'a710f5c7dd5824c66a6add5c
   
 ## Autoscale (HPA)
   - 오토스케일러 (HPA) 를 설정하여 확장적 운영이 가능한가?
+order서비스의 cpu사용량이 20%가 되면 최대 3개까지 pod를 확장하도록 HPA설정을 하였다.
+![image](https://user-images.githubusercontent.com/78421066/127004714-17193bae-e3f8-4d4b-bf0f-10038998c76c.png)
+
+현재 pod의 갯수는 1개 이다.
+![image](https://user-images.githubusercontent.com/78421066/127004332-ab516303-379c-4e00-b2dd-8b81440515d7.png)
+
+siege를 이용하여 부하를 주었다.
+```
+siege -c200 -t40S -v --content-type "application/json" 'a710f5c7dd5824c66a6add5cdb3d7693-1620655872.ca-central-1.elb.amazonaws.com:8080/orders'
+```
+
+현재 pod의 갯수가 3개로 늘었다.
+![image](https://user-images.githubusercontent.com/78421066/127008300-160129bb-3bdf-44a0-aed8-239f33aa6e05.png)
