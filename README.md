@@ -475,6 +475,26 @@ http localhost:8088/ordermgmts "Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cC
 ```
     
 # 운영
+## CI/CD
+
+지속적 통합(CI)의 경우 Git을 이용하였다. 완성된 소스는 GitHub에 올려 놓았고 업데이트시 Comment도 기입 하였다.
+
+![image](https://user-images.githubusercontent.com/78421066/126940482-bc28ea13-18d8-4b75-82e9-53feacee964f.png)
+
+지속적 배포(CD)의 경우 AWS CodeBuild를 이용하였다. 각 마이크로서비스별로 buildspec을 이용하여 도커이미지 파일 및 컨테이너를 생성하였다. 이미지파일은 AWS ECR 서비스를 이용하여 저장하였다.
+
+![image](https://user-images.githubusercontent.com/78421066/126941039-358fd4c6-24e5-4b85-a8cc-f3d14ca19c8d.png)
+![image](https://user-images.githubusercontent.com/78421066/126941113-9d4683b6-ad59-4ac0-9b75-c831de579b9c.png)
+![image](https://user-images.githubusercontent.com/78421066/126941252-4f40e09f-47ac-476a-8c44-80f2a8e7866a.png)
+
+마지막으로 쿠버네티스를 이용하여 컨테이너들을 관리하였고 AWS EKS 서비스를 이용하였다.
+
+![image](https://user-images.githubusercontent.com/78421066/126941292-0e68bde4-4a64-4dc1-bbc3-0b2a54885407.png)
+
+부여 받은 계정으로 AWS CLI에서 인증 후 EKS 클러스터에서 fishdelivery 마이크로서비스별 컨테이너를 조회한 모습이다.
+![image](https://user-images.githubusercontent.com/78421066/126941549-c995e94c-4889-4581-b294-1470e6e89bd7.png)
+
+
 ## SLA 준수
   - 셀프힐링: Liveness Probe 를 통하여 어떠한 서비스의 health 상태가 지속적으로 저하됨에 따라 어떠한 임계치에서 pod 가 재생되는 것을 증명할 수 있는가?
   - 서킷브레이커, 레이트리밋 등을 통한 장애격리와 성능효율을 높힐 수 있는가?
