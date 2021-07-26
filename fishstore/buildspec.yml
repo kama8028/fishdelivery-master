@@ -68,7 +68,7 @@ phases:
             labels:
               app: $_PROJECT_NAME
           spec:
-            replicas: 1
+            replicas: 2
             selector:
               matchLabels:
                 app: $_PROJECT_NAME
@@ -82,6 +82,14 @@ phases:
                   image: $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
                   ports:
                   - containerPort: 8080
+                  readinessProbe:
+                    httpGet:
+                      path: '/fishstores'
+                      port: 8080
+                    initialDelaySeconds: 10 # 컨테이너가 시작된 후, Probe가 작동하기까지 딜레이 : 10초
+                    timeoutSeconds: 2       # Probe가 작동하고 최대 기다리는 시간(타임아웃) : 2초
+                    periodSeconds: 5        # Probe를 수행하는 주기 : 5초
+                    failureThreshold: 3     # Probe가 최종 실패로 간주하는 회수 : 3회(5초에 한번씩 체크의 회수라고 보면 됨)
           EOF
 cache:
   paths:
