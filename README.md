@@ -20,11 +20,11 @@ Lv.2 개인평과 과제 -  회 배달 서비스
     - [API 게이트웨이](#API-게이트웨이)
   - [운영](#운영)
     - [Deploy/Pipeline](#deploypipeline)
-    - [동기식 호출 / Circuit Breaker / 장애격리](#동기식-호출-circuit-breaker-장애격리)
-    - [Autoscale (HPA)](#Autoscale-(HPA))
-    - [Zero-downtime deploy (Readiness Probe)](#Zerodowntime-deploy-(Readiness-Probe))
     - [ConfigMap](#ConfigMap)
     - [Self-healing (Liveness Probe)](#self-healing-(liveness-probe))
+    - [Zero-downtime deploy (Readiness Probe)](#Zerodowntime-deploy-(Readiness-Probe))
+    - [동기식 호출 / Circuit Breaker / 장애격리](#동기식-호출-circuit-breaker-장애격리)
+    - [Autoscale (HPA)](#Autoscale-(HPA))    
 
 # 서비스 시나리오
 
