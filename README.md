@@ -540,6 +540,53 @@ Restart 2회 확인, kubectl describe 명령어로 확인시 정상 실행 확�
   
 ## Zerodowntime deploy (Readiness Probe)
   - Readiness Probe 의 설정과 Rolling update을 통하여 신규 버전이 완전히 서비스를 받을 수 있는 상태일때 신규버전의 서비스로 전환됨을 siege 등으로 증명 
+
+fishstore의 이미지 및 속성을 변경하면서 readinessProbe 속성도 넣었다. 또한 replicas를 2 -> 1로 줄이며 pod의 숫자도 줄여보았다.
+
+```
+kubectl apply -f readiness_probe.yml 
+```
+```
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fishstore
+  labels:
+    app: fishstore
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fishstore
+  template:
+    metadata:
+      labels:
+        app: fishstore
+    spec:
+      containers:
+      - name: fishstore
+        image: 879772956301.dkr.ecr.ca-central-1.amazonaws.com/user25-ecr:Readiness
+        ports:
+        - containerPort: 8080
+        readinessProbe:
+          httpGet:
+            path: '/fishstores'
+            port: 8080
+          initialDelaySeconds: 10
+          timeoutSeconds: 2
+          periodSeconds: 5
+          failureThreshold: 3  
+```
+
+이렇게 속성이 변경될때 watch명령어를 사용하여 pod의 변동을 살펴 보았다.
+![image](https://user-images.githubusercontent.com/78421066/127002688-f6470762-cb3e-41c5-8d6c-40065e1b7d19.png)
+
+마지막으로 siege부하를 줘서 무중단 배포가 됨을 확인 하였다.
+```
+siege -c100 -t30S -v --content-type "application/json" 'a710f5c7dd5824c66a6add5cdb3d7693-1620655872.ca-central-1.elb.amazonaws.com:8080/fishstores'
+```
+![image](https://user-images.githubusercontent.com/78421066/127003092-d791c1e8-335d-4ca7-8783-cd576cf14be8.png)
+
   
 ## 동기식 호출 circuit breaker 장애격리
   - 서킷브레이커, 레이트리밋 등을 통한 장애격리와 성능효율을 높힐 수 있는가?
