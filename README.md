@@ -19,7 +19,7 @@ Lv.2 개인평과 과제 -  회 배달 서비스
     - [폴리글랏 퍼시스턴스](#폴리글랏-퍼시스턴스)
     - [API 게이트웨이](#API-게이트웨이)
   - [운영](#운영)
-    - [Deploy/Pipeline](#deploypipeline)
+    - [CI/CD](#CI/CD)
     - [ConfigMap](#ConfigMap)
     - [Self-healing (Liveness Probe)](#self-healing-(liveness-probe))
     - [Zero-downtime deploy (Readiness Probe)](#Zerodowntime-deploy-(Readiness-Probe))
@@ -475,12 +475,74 @@ http localhost:8088/ordermgmts "Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cC
 ```
     
 # 운영
-## SLA 준수
+## CI/CD
+
+지속적 통합(CI)의 경우 Git을 이용하였다. 완성된 소스는 GitHub에 올려 놓았고 업데이트시 Comment도 기입 하였다.
+
+![image](https://user-images.githubusercontent.com/78421066/126940482-bc28ea13-18d8-4b75-82e9-53feacee964f.png)
+
+지속적 배포(CD)의 경우 AWS CodeBuild를 이용하였다. 각 마이크로서비스별로 buildspec을 이용하여 도커이미지 파일 및 컨테이너를 생성하였다. 이미지파일은 AWS ECR 서비스를 이용하여 저장하였다.
+
+![image](https://user-images.githubusercontent.com/78421066/126941039-358fd4c6-24e5-4b85-a8cc-f3d14ca19c8d.png)
+![image](https://user-images.githubusercontent.com/78421066/126941113-9d4683b6-ad59-4ac0-9b75-c831de579b9c.png)
+![image](https://user-images.githubusercontent.com/78421066/126941252-4f40e09f-47ac-476a-8c44-80f2a8e7866a.png)
+
+마지막으로 쿠버네티스를 이용하여 컨테이너들을 관리하였고 AWS EKS 서비스를 이용하였다.
+
+![image](https://user-images.githubusercontent.com/78421066/126941292-0e68bde4-4a64-4dc1-bbc3-0b2a54885407.png)
+
+부여 받은 계정으로 AWS CLI에서 인증 후 EKS 클러스터에서 fishdelivery 마이크로서비스별 컨테이너를 조회한 모습이다.
+![image](https://user-images.githubusercontent.com/78421066/126941549-c995e94c-4889-4581-b294-1470e6e89bd7.png)
+
+## ConfigMap
+
+## self healing (liveness probe)
   - 셀프힐링: Liveness Probe 를 통하여 어떠한 서비스의 health 상태가 지속적으로 저하됨에 따라 어떠한 임계치에서 pod 가 재생되는 것을 증명할 수 있는가?
-  - 서킷브레이커, 레이트리밋 등을 통한 장애격리와 성능효율을 높힐 수 있는가?
-  - 오토스케일러 (HPA) 를 설정하여 확장적 운영이 가능한가?
-  - 모니터링, 앨럿팅: 
     
-## 무정지 운영 CI/CD (10)
+Liveness Probe를 진행하기 위해서 아래의 시나리오로 테스트를 진행하였다.
+  
+시나리오는 아래와 같다.
+1.delivery Pod 실행시 /tmp/healthy 파일이 존재하는지 확인한다.(체크시간은 아래 주석표기)
+
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  name: delivery
+  labels:
+    app: delivery
+spec:
+  containers:
+  - name: delivery
+    image: 879772956301.dkr.ecr.ca-central-1.amazonaws.com/user25-ecr:delivery
+    livenessProbe:
+      exec:
+        command:
+        - cat 
+        - /tmp/healthy
+      initialDelaySeconds: 15  # 15초 후 시작
+      periodSeconds: 5 # 5초단위로 검사
+      failureThreshold: 4 # 4번 실패시 1번 Restart
+```
+
+2.체크 중간에 delivery Pod에 접속하여 파일을 넣는다.
+
+![image](https://user-images.githubusercontent.com/78421066/126961760-94a765ca-2cfc-4606-8df2-350601657de3.png)
+
+3.delivery Pod가 정상적으로 실행됨을 확인 한다.
+
+Restart 2회 확인, kubectl describe 명령어로 확인시 정상 실행 확인
+
+![image](https://user-images.githubusercontent.com/78421066/126961897-6485dcba-ce6c-4665-9e5f-05a19c3545c7.png)
+
+![image](https://user-images.githubusercontent.com/78421066/126962170-916ad806-aed8-45d3-ab19-cac6ba25d876.png)
+ 
+  
+## Zerodowntime deploy (Readiness Probe)
   - Readiness Probe 의 설정과 Rolling update을 통하여 신규 버전이 완전히 서비스를 받을 수 있는 상태일때 신규버전의 서비스로 전환됨을 siege 등으로 증명 
-  - Contract Test :  자동화된 경계 테스트를 통하여 구현 오류나 API 계약위반를 미리 차단 가능한가?
+  
+## 동기식 호출 circuit breaker 장애격리
+  - 서킷브레이커, 레이트리밋 등을 통한 장애격리와 성능효율을 높힐 수 있는가?
+  
+## Autoscale (HPA)
+  - 오토스케일러 (HPA) 를 설정하여 확장적 운영이 가능한가?
