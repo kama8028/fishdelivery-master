@@ -19,7 +19,7 @@ Lv.2 개인평과 과제 -  회 배달 서비스
     - [폴리글랏 퍼시스턴스](#폴리글랏-퍼시스턴스)
     - [API 게이트웨이](#API-게이트웨이)
   - [운영](#운영)
-    - [Deploy/Pipeline](#deploypipeline)
+    - [CI/CD](#CI/CD)
     - [ConfigMap](#ConfigMap)
     - [Self-healing (Liveness Probe)](#self-healing-(liveness-probe))
     - [Zero-downtime deploy (Readiness Probe)](#Zerodowntime-deploy-(Readiness-Probe))
@@ -494,13 +494,16 @@ http localhost:8088/ordermgmts "Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cC
 부여 받은 계정으로 AWS CLI에서 인증 후 EKS 클러스터에서 fishdelivery 마이크로서비스별 컨테이너를 조회한 모습이다.
 ![image](https://user-images.githubusercontent.com/78421066/126941549-c995e94c-4889-4581-b294-1470e6e89bd7.png)
 
+## ConfigMap
 
-## SLA 준수
+## self healing (liveness probe)
   - 셀프힐링: Liveness Probe 를 통하여 어떠한 서비스의 health 상태가 지속적으로 저하됨에 따라 어떠한 임계치에서 pod 가 재생되는 것을 증명할 수 있는가?
-  - 서킷브레이커, 레이트리밋 등을 통한 장애격리와 성능효율을 높힐 수 있는가?
-  - 오토스케일러 (HPA) 를 설정하여 확장적 운영이 가능한가?
-  - 모니터링, 앨럿팅: 
-    
-## 무정지 운영 CI/CD (10)
+  
+## Zerodowntime deploy (Readiness Probe)
   - Readiness Probe 의 설정과 Rolling update을 통하여 신규 버전이 완전히 서비스를 받을 수 있는 상태일때 신규버전의 서비스로 전환됨을 siege 등으로 증명 
-  - Contract Test :  자동화된 경계 테스트를 통하여 구현 오류나 API 계약위반를 미리 차단 가능한가?
+  
+## 동기식 호출 circuit breaker 장애격리
+  - 서킷브레이커, 레이트리밋 등을 통한 장애격리와 성능효율을 높힐 수 있는가?
+  
+## Autoscale (HPA)
+  - 오토스케일러 (HPA) 를 설정하여 확장적 운영이 가능한가?
