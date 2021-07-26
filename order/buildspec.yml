@@ -82,6 +82,11 @@ phases:
                   image: $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
                   ports:
                   - containerPort: 8080
+                  resources:
+                    limits:
+                      cpu: 500m
+                    requests:
+                      cpu: 200m
           EOF
 cache:
   paths:
