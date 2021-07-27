@@ -2,6 +2,7 @@ package fishdelivery;
 
 import javax.persistence.*;
 
+import fishdelivery.external.PaymentService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -32,11 +33,6 @@ public class Order {
         BeanUtils.copyProperties(this, orderPlaced);
         orderPlaced.publishAfterCommit();
 
-        GenericXmlApplicationContext ctx = new GenericXmlApplicationContext();
-        ConfigurableEnvironment env = ctx.getEnvironment();
-
-        System.out.println("한용선 로그" + env.getProperty("URL"));
-
         fishdelivery.external.Payment payment = new fishdelivery.external.Payment();
         payment.setOrderId(orderPlaced.getOrderId());
         payment.setCustomerName(orderPlaced.getCustomerName());
@@ -45,6 +41,10 @@ public class Order {
         payment.setTelephone(orderPlaced.getTelephone());
         payment.setAddress(orderPlaced.getAddress());
         payment.setStatus(orderPlaced.getStatus());
+
+        GenericXmlApplicationContext ctx = new GenericXmlApplicationContext();
+        ConfigurableEnvironment env = ctx.getEnvironment();
+        System.out.println("한용선 로그" + env.getProperty("URL") + "${URL}");
 
         OrderApplication.applicationContext.getBean(fishdelivery.external.PaymentService.class).pay(payment);
     }
