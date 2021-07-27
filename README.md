@@ -473,6 +473,8 @@ data:
 
 해당 ConfigMap을 적용하기 위해 buildSpec에 환경변수를 추가 하였다. 코드에 보면 configMapKeyRef가 보이는데 configMap의 이름과 url변수에 저장된 키값을 참고 하겠다는 의미이다.
 
+![image](https://user-images.githubusercontent.com/78421066/127099138-b011ad4f-ac70-433b-a7ff-e046973ffa7f.png)
+
 ![image](https://user-images.githubusercontent.com/78421066/127075033-021e2ed6-0819-415d-ade2-9c631155cd5f.png)
 
 다시 배포를 한 이후 order서비스 pod에 들어가서 URL 변수의 키값을 확인 할 수가 있다.
