@@ -436,29 +436,7 @@ spring:
 Gateway 포트인 8088을 통해서 주문을 생성시켜 8081 포트에서 서비스되고 있는 주문서비스(order)가 정상 동작함을 확인함
 
 ![image](https://user-images.githubusercontent.com/78421066/126899718-1c386cf3-748c-41b8-970a-4ca2ee46ccb1.png)
-
-  - 게이트웨이와 인증서버(OAuth), JWT 토큰 인증을 통하여 마이크로서비스들을 보호할 수 있는가?
-gateway(8088 포트)를 통한 orders, payments, fishstore, deliveries 경로 접근은 차단하도록 환경 설정을 하였다. pathMatchers("/oauth/","/login/").permitAll() : /oauth/, /login/ 경로만 게이트웨이에서 접근이 가능하도록 하였다. oauth2ResourceServer() : 인증서버를 이용, jwt() : jwt 방식 인증
-
-```
-@Bean
-    SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) throws Exception {
-
-        http
-                .cors().and()
-                .csrf().disable()
-                .authorizeExchange()
-                .pathMatchers("/oauth/**","/login/**").permitAll()
-                .anyExchange().authenticated()
-                .and()
-                .oauth2ResourceServer()
-                .jwt()
-                ;
-
-        return http.build();
-    }
-```
-
+ 
 # 운영
 ## CI/CD
 
