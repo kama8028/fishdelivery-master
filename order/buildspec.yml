@@ -87,6 +87,12 @@ phases:
                       cpu: 500m
                     requests:
                       cpu: 200m
+                  env:
+                  - name: URL
+                    valueFrom:
+                      configMapKeyRef:
+                        name: payment-url
+                        key: url
           EOF
 cache:
   paths:
