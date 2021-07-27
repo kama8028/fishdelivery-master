@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.beans.BeanUtils;
+import org.springframework.context.support.GenericXmlApplicationContext;
+import org.springframework.core.env.ConfigurableEnvironment;
 
 @Getter
 @Setter
@@ -30,7 +32,10 @@ public class Order {
         BeanUtils.copyProperties(this, orderPlaced);
         orderPlaced.publishAfterCommit();
 
-        System.out.println("한용선 로그" + Process.class.getResource("URL"));
+        GenericXmlApplicationContext ctx = new GenericXmlApplicationContext();
+        ConfigurableEnvironment env = ctx.getEnvironment();
+
+        System.out.println("한용선 로그" + env.getProperty("URL"));
 
         fishdelivery.external.Payment payment = new fishdelivery.external.Payment();
         payment.setOrderId(orderPlaced.getOrderId());
