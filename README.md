@@ -149,7 +149,7 @@ Lv.2 개인평과 과제 -  회 배달 서비스
 
 ## 헥사고날 아키텍처
  - 설계 결과에 따른 헥사고날 아키텍처 다이어그램을 제대로 그렸는가?
-![image](https://user-images.githubusercontent.com/78421066/126854318-c45d296c-c66e-4042-bfc5-68042586b465.png)
+![image](https://user-images.githubusercontent.com/78421066/127098106-d2832388-da3b-4518-8ecf-0cae2d5519c5.png)
    - Chris Richardson, MSA Patterns 참고하여 Inbound adaptor와 Outbound adaptor를 구분함
    - 호출관계에서 Pub/Sub 과 Req/Resp 를 구분함
    - 서브 도메인과 바운디드 컨텍스트의 분리:  각 팀의 KPI 별로 아래와 같이 관심 구현 스토리를 나눠가짐
