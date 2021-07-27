@@ -19,6 +19,7 @@ spring-cloud의 서비스 중 하나. Circuit Breaker Pattern을 사용.
 @FeignClient(name="payment", url="http://payment:8080")
 //@FeignClient(name="payment", url="http://localhost:8082", fallback = PaymentServiceFallback.class)
 public interface PaymentService {
+
     @RequestMapping(method= RequestMethod.POST, path="/payments")
     public void pay(@RequestBody Payment payment);
 }
