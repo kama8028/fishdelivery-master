@@ -386,8 +386,20 @@ public interface MyPageRepository extends CrudRepository<MyPage, Long> {
 ![image](https://user-images.githubusercontent.com/78421066/126864589-b74ac9a9-f4b8-451e-9dc4-6655e6aeaff3.png)
 
 ## 폴리글랏 퍼시스턴스
-  - 각 마이크로 서비스들이 하나이상의 각ㄷ자의 기술 Stack 으로 구성되었는가?
-  - 각 마이크로 서비스들이 각자의 저장소 구조를 자율적으로 채택하고 각자의 저장소 유형 (RDB, NoSQL, File System 등)을 선택하여 구현하였는가?
+Payment서비스의 경우 결제 데이터가 저장되어 있기 때문에 H2보단 안정성이 더 좋은 MariaDB를 사용하기로 결정 하였다. 해당 DB는 AWS에서 제공하는 RDS서비스에서 구축하였다.
+![image](https://user-images.githubusercontent.com/78421066/127096086-48f6cdc7-12c9-40bb-8ed6-1984e55b9acf.png)
+
+소스의 경우도 mariadb 의존성을 주입 하고 rds와 접근하기 위한 url도 넣어 주었다.
+![image](https://user-images.githubusercontent.com/78421066/127096186-0f7aa6e9-81ea-4b71-8424-edff5cf6b03a.png)
+
+![image](https://user-images.githubusercontent.com/78421066/127096232-f3ae92da-e732-4ff5-984a-c6322fd2b7f1.png)
+
+사유는 알 수 없으나 mariadb의 경우 pk가 자동으로 채번되지 않았다. 그래서 sequence 테이블을 생성하니 데이터가 정상적으로 들어갔다.
+![image](https://user-images.githubusercontent.com/78421066/127096432-e19b4799-628f-4d08-bd8b-b342c6016b2a.png)
+
+주문을 넣으면 PAYMENT 테이블에 데이터가 들어감을 알 수가 있다.
+![image](https://user-images.githubusercontent.com/78421066/127096513-d444c0f5-4b1b-402e-a399-57087e2bdcbe.png)
+
   
 ## API 게이트웨이
   - API GW를 통하여 마이크로 서비스들의 집입점을 통일할 수 있는가?
