@@ -30,7 +30,7 @@ public class Order {
         BeanUtils.copyProperties(this, orderPlaced);
         orderPlaced.publishAfterCommit();
 
-        System.out.println(Process.class.getResource("URL"));
+        System.out.println("한용선 로그" + Process.class.getResource("URL"));
 
         fishdelivery.external.Payment payment = new fishdelivery.external.Payment();
         payment.setOrderId(orderPlaced.getOrderId());
