@@ -459,46 +459,6 @@ gateway(8088 포트)를 통한 orders, payments, fishstore, deliveries 경로 �
     }
 ```
 
-인증서버(OAuth)의 경우 해당 아이디(1@uengine.org)와 패스워드(1)로 접근한 사용자만 토큰값을 얻어서 접근 할 수 있도록 구현하였다.
-
-```
-User user = new User();
-		user.setUsername("1@uengine.org");
-		user.setPassword(passwordEncoder.encode("1"));
-		user.setNickName("유엔진");
-		user.setAddress("서울시");
-		user.setRole("USER_ADMIN");
-		repository.save(user);
-```
-
-gateway(8088포트)를 통해 fishstore로 접근을 하면 유효하지 않은 인증(401 Unauthorized) 나오게 된다.
-```
-$ http localhost:8088/fishstore
-HTTP/1.1 401 Unauthorized
-Cache-Control: no-cache, no-store, max-age=0, must-revalidate
-Expires: 0
-Pragma: no-cache
-Referrer-Policy: no-referrer
-Vary: Origin
-Vary: Access-Control-Request-Method
-Vary: Access-Control-Request-Headers
-WWW-Authenticate: Bearer
-X-Content-Type-Options: nosniff
-X-Frame-Options: DENY
-X-XSS-Protection: 1 ; mode=block
-content-length: 0
-```
-
-인증을 하기 위해서 토큰값을 갖고 온다.
-```
-http --form POST localhost:8090/oauth/token "Authorization: Basic dWVuZ2luZS1jbGllbnQ6dWVuZ2luZS1zZWNyZXQ=" grant_type=password username=1@uengine.org password=1
-```
-
-해당 access_token 값을 가지고 다시 localhost:8088/ordermgmts에 접속하면 인증됨을 확인 할 수 있다.
-```
-http localhost:8088/ordermgmts "Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZGRyZXNzIjoi7ISc7Jq47IucIiwidXNlcl9uYW1lIjoiMUB1ZW5naW5lLm9yZyIsInNjb3BlIjpbInJlYWQiLCJ3cml0ZSIsInRydXN0Il0sIm5pY2tuYW1lIjoi7Jyg7JeU7KeEIiwiY29tcGFueSI6IlVlbmdpbmUiLCJleHAiOjE2MjU5Nzg0NjQsImF1dGhvcml0aWVzIjpbIlVTRVJfQURNSU4iXSwianRpIjoiZ1l6cEltL29RYytucC9iYVZacGZYazNIU3k0PSIsImNsaWVudF9pZCI6InVlbmdpbmUtY2xpZW50In0.Ic56B-RPB4voEPSnQ_IecmSwbgqg2x7FojMFohKvHzMnKzA_6yb72vFs-ay3T7DSyplD22bdHvE1yEYV8oTzAv47srcjS4YLMnM9BDVLartkltfaj-DkXuiNRDbvesIKp4tTv3gFEQ16deocvY9W5Dv-Hkhqk_Hy4SlR2LKdKD2Q5yHDM4kqsNesjPFnRydJqHLgv0l9LIF76VJI5woMFJ8H6mRGE8DKJOvOF2DwItc8MzqgwILQV4WYzw8yRy_CZjR2hDG1wsqqhi1YlQWfgySRrFsaXAYv08h_rMPzudpncNOXM1i9SZlXcX0-BI03GCO6RmLMmo-NonTkSk5JTg"
-```
-    
 # 운영
 ## CI/CD
 
