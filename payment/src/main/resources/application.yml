@@ -42,6 +42,17 @@ server:
 
 spring:
   profiles: docker
+  jpa:
+    properties:
+      hibernate:
+        ddl-auto: none
+        show_sql: true
+        format_sql: true
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://payment.cfam8zzanhwi.ca-central-1.rds.amazonaws.com:3306/payment
+    username: user25
+    password: user25skcc!
   cloud:
     stream:
       kafka:
