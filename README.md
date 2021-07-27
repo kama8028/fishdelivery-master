@@ -215,7 +215,7 @@ SAGA Pattern이란 분산 트랜잭션 시나리오의 마이크로 서비스에
 
 빨강색으로 표기된 주문이 발생하면 주문(order)서비스에서 결제(payment)서비스로 이벤트를 보낸다.
 
-![image](https://user-images.githubusercontent.com/78421066/127072544-87eb3de1-6ffb-4186-95ad-fad095011611.png)
+![image](https://user-images.githubusercontent.com/78421066/127098482-50502219-61cb-4566-971e-d68243c44b57.png)
 
 ![image](https://user-images.githubusercontent.com/78421066/127072584-05916674-7fae-4efb-8272-2fcf6adaac67.png)
 
