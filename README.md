@@ -316,11 +316,11 @@ delivery 서비스를 실행시키면 자동으로 이벤트가 수신 됨을 �
 
   - Scaling-out: Message Consumer 마이크로서비스의 Replica 를 추가했을때 중복없이 이벤트를 수신할 수 있는가?
 
-배송(delievery)서비스의 포트 추가(기존:8084, 추가:8093)하여 2개의 노드로 배송서비스를 실행한다. fishdelivery topic의 partition은 1개이기 때문에 기존 8084 포트의 서비스만 partition이 할당된다.
+배송(delievery)서비스의 포트 추가(기존:8084, 추가:8094)하여 2개의 노드로 배송서비스를 실행한다. fishdelivery topic의 partition은 1개이기 때문에 기존 8084 포트의 서비스만 partition이 할당된다.
 
 ![image](https://user-images.githubusercontent.com/78421066/126863545-c1713cd6-b3d2-49ca-b74a-672808daf2a1.png)
  
- 배송 이벤트 발생시 8083 포트에만 주문이 들어오게 되어 중복이 발생 안함을 확인 할 수 있다.
+ 배송 이벤트 발생시 8084 포트에만 주문이 들어오게 되어 중복이 발생 안함을 확인 할 수 있다.
 
 ![image](https://user-images.githubusercontent.com/78421066/126863755-4799cb2f-b919-4df4-976e-109034025f50.png)
  
