@@ -14,6 +14,7 @@ Lv.2 개인평과 과제 -  회 배달 서비스
   - [분석/설계](#분석-설계)
   - [구현:](#구현)
     - [DDD 의 적용](#DDD의-적용)
+    - [SAGA Pattern](#SAGA-Pattern)
     - [동기식 호출과 Fallback 처리](#동기식-호출과-Fallback-처리)
     - [비동기식 호출과 Eventual Consistency](#비동기식-호출과-Eventual-Consistency)
     - [폴리글랏 퍼시스턴스](#폴리글랏-퍼시스턴스)
@@ -206,20 +207,32 @@ Ubiquitous Language(보편 언어)는 도메인 전문가, 아키텍트, 개발�
 주문취소 : OrderCanceled
 ```
   
+## SAGA Pattern
+
+SAGA Pattern이란 분산 트랜잭션 시나리오의 마이크로 서비스에서 데이터 일관성을 관리 하는 방법입니다. Saga는 각 서비스를 업데이트 하고 메시지 또는 이벤트를 게시 하여 다음 트랜잭션 단계를 트리거하는 일련의 트랜잭션 입니다.
+
+![image](https://user-images.githubusercontent.com/78421066/127072004-9c72db60-1b40-4ab6-9d30-27a5d3193a36.png)
+
+빨강색으로 표기된 주문이 발생하면 주문(order)서비스에서 결제(payment)서비스로 이벤트를 보낸다.
+
+![image](https://user-images.githubusercontent.com/78421066/127072544-87eb3de1-6ffb-4186-95ad-fad095011611.png)
+
+![image](https://user-images.githubusercontent.com/78421066/127072584-05916674-7fae-4efb-8272-2fcf6adaac67.png)
+
+상점(fishstore)에서 주문이 가능함이 확인되면 접수를 진행하고 포장과 함께 배송(delivery)서비스로 가게 된다.
+
+![image](https://user-images.githubusercontent.com/78421066/127072790-8a8d2679-50b6-4f3d-8a4b-54dcb575ac63.png)
+
+![image](https://user-images.githubusercontent.com/78421066/127072836-c85c2033-db01-433b-ac5b-b5e5846d3a86.png)
+
+주문 취소의 경우 취소 이벤트가 발생하게 되면 모든 서비스에게 취소 이벤트가 전달되게 된다.
+
+![image](https://user-images.githubusercontent.com/78421066/127073207-821f38f4-62fb-4a41-8a2a-9d8469fab5b1.png)
+
+![image](https://user-images.githubusercontent.com/78421066/127073243-bf4d6c49-3216-4d45-97c7-bff9115d5d2e.png)
+  
 ## 동기식 호출과 Fallback 처리
   - 마이크로 서비스간 Request-Response 호출에 있어 대상 서비스를 어떠한 방식으로 찾아서 호출 하였는가? (Service Discovery, REST, FeignClient)
-
-REST API를 이용하여 주문(POST)을 하였다.
-
-![캡처](https://user-images.githubusercontent.com/78421066/126857456-a9a62373-9b55-4f8c-9f6b-ad3e0a3f0433.PNG)
-
-REST API를 이용하여 상점에서 주문 확정(PATCH)을 하였다. 주문 확정
-
-![image](https://user-images.githubusercontent.com/78421066/126857508-17adff03-ac8a-4b7d-92e1-ffa9e35f2f1a.png)
-
-주문 확정 status 확인, 준비중(prepared) 상태로 변경 확인
-
-![image](https://user-images.githubusercontent.com/78421066/126857539-a9f69e0c-fa49-441a-8da0-e859e5b02602.png)
 
 주문과 결제는 하나의 STEP으로 이루어져야 하기 때문에 Req-Res 방식으로 진행하였다. 해당 방식을 이용하기 위해서 order -> payment 서비스를 호출할때 @FeingClient를 이용하였다.
 ```
@@ -274,7 +287,7 @@ http PATCH localhost:8083/fishstores/1 status="prepared"
 
   - Correlation-key:  각 이벤트 건 (메시지)가 어떠한 폴리시를 처리할때 어떤 건에 연결된 처리건인지를 구별하기 위한 Correlation-key 연결을 제대로 구현 하였는가?
 
-모든 주문은 orderId를 기준으로 구별 할 수 있게 만들었다. 서비스별 Repository에 findByOrderId 함수를 구현 하였다. 주문 취소시 해당 함수를 통해 고객이 원하는 취소건을 구별 할 수 있다.
+모든 주문은 orderId를 기준으로 구별 할 수 있게 만들었다.(Correlation-key) 서비스별 Repository에 findByOrderId 함수를 구현 하였다. 주문 취소시 해당 함수를 통해 고객이 원하는 취소건을 구별 할 수 있다.
 ```
 @StreamListener(KafkaProcessor.INPUT)
     public void wheneverOrderCanceled_CancelOrder(@Payload OrderCanceled orderCanceled){
@@ -496,7 +509,7 @@ http localhost:8088/ordermgmts "Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cC
 
 ## ConfigMap
 
-## self healing (liveness probe)
+## self-healing (liveness probe)
   - 셀프힐링: Liveness Probe 를 통하여 어떠한 서비스의 health 상태가 지속적으로 저하됨에 따라 어떠한 임계치에서 pod 가 재생되는 것을 증명할 수 있는가?
     
 Liveness Probe를 진행하기 위해서 아래의 시나리오로 테스트를 진행하였다.
@@ -606,3 +619,19 @@ siege -c100 -t30S -v --content-type "application/json" 'a710f5c7dd5824c66a6add5c
   
 ## Autoscale (HPA)
   - 오토스케일러 (HPA) 를 설정하여 확장적 운영이 가능한가?
+order서비스의 cpu사용량이 20%가 되면 최대 3개까지 pod를 확장하도록 HPA설정을 하였다.
+
+![image](https://user-images.githubusercontent.com/78421066/127004714-17193bae-e3f8-4d4b-bf0f-10038998c76c.png)
+
+현재 pod의 갯수는 1개 이다.
+
+![image](https://user-images.githubusercontent.com/78421066/127004332-ab516303-379c-4e00-b2dd-8b81440515d7.png)
+
+siege를 이용하여 부하를 주었다.
+```
+siege -c200 -t40S -v --content-type "application/json" 'a710f5c7dd5824c66a6add5cdb3d7693-1620655872.ca-central-1.elb.amazonaws.com:8080/orders'
+```
+
+현재 pod의 갯수가 3개로 늘었다.
+
+![image](https://user-images.githubusercontent.com/78421066/127008300-160129bb-3bdf-44a0-aed8-239f33aa6e05.png)
