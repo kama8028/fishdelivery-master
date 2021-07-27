@@ -509,6 +509,26 @@ http localhost:8088/ordermgmts "Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cC
 
 ## ConfigMap
 
+Order서비스에서 Req-Res적용을 위해 payment URL이 필요한데 해당 URL(http://payment:8080)을 환경변수에 넣어 보았다.
+ConfigMap 코드 이다.
+
+```
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: payment-url
+data:
+  url: http://payment:8080
+```
+
+해당 ConfigMap을 적용하기 위해 buildSpec에 환경변수를 추가 하였다. 코드에 보면 configMapKeyRef가 보이는데 configMap의 이름과 url변수에 저장된 키값을 참고 하겠다는 의미이다.
+
+![image](https://user-images.githubusercontent.com/78421066/127075033-021e2ed6-0819-415d-ade2-9c631155cd5f.png)
+
+다시 배포를 한 이후 order서비스 pod에 들어가서 URL 변수의 키값을 확인 할 수가 있다.
+
+![image](https://user-images.githubusercontent.com/78421066/127076421-c3c543f9-6907-48e7-82e0-c32e61affce9.png)
+
 ## self-healing (liveness probe)
   - 셀프힐링: Liveness Probe 를 통하여 어떠한 서비스의 health 상태가 지속적으로 저하됨에 따라 어떠한 임계치에서 pod 가 재생되는 것을 증명할 수 있는가?
     
