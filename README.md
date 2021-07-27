@@ -578,9 +578,10 @@ siege -c100 -t30S -v --content-type "application/json" 'a710f5c7dd5824c66a6add5c
 서킷 브레이킹 프레임워크의 선택: Spring FeignClient + Hystrix 옵션을 사용하여 구현함.오더 요청이 과도할 경우 서킷 브레이크를 통해 장애 격리를 하려고 한다.
 Hystrix 를 설정: 요청처리 쓰레드에서 처리시간이 610 ms가 넘어서기 시작하여 어느정도 유지되면 CB 회로가 닫히도록 (요청을 빠르게 실패처리, 차단) 설정
 
-![image](https://user-images.githubusercontent.com/78421066/127003949-11164097-c421-49a7-a013-5a2aa761e463.png)
+![image](https://user-images.githubusercontent.com/78421066/127099570-11accc15-22ec-49c0-bdae-5c0090c5ff6d.png)
 
-![image](https://user-images.githubusercontent.com/78421066/127003995-485d5020-f945-40de-b4b8-68a9d2a66371.png)
+![image](https://user-images.githubusercontent.com/78421066/127099637-15c86c52-a564-430c-8fe6-2cbc7be8d2de.png)
+
  
 부하테스터 siege 툴을 통한 서킷 브레이커 동작 확인: 동시사용자 100명 30초 동안 실시
 ```
